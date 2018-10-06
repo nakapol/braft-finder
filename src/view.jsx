@@ -79,8 +79,7 @@ export default class BraftFinderView extends React.Component {
               ? 'EMBED'
               : ''
     }
-    console.log(fileAccept)
-    console.log('asdasdadasdadas')
+
     return {
       fileAccept: fileAccept,
       external: external,

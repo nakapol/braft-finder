@@ -902,8 +902,7 @@ var BraftFinderView = function (_React$Component) {
         url: '',
         type: externals.image ? 'IMAGE' : externals.audio ? 'AUDIO' : externals.video ? 'VIDEO' : externals.embed ? 'EMBED' : ''
       };
-      console.log(fileAccept);
-      console.log('asdasdadasdadas');
+
       return {
         fileAccept: fileAccept,
         external: external,
