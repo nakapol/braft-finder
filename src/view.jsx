@@ -40,7 +40,7 @@ export default class BraftFinderView extends React.Component {
         type: 'IMAGE'
       },
       fileAccept: '',
-      showExternalForm: true,
+      showExternalForm: false,
       allowExternal: false,
       items: initialItems
     }
@@ -80,7 +80,6 @@ export default class BraftFinderView extends React.Component {
               : ''
     }
     console.log(fileAccept)
-    console.log('externals :', externals);
     return {
       fileAccept: fileAccept,
       external: external,
@@ -166,7 +165,7 @@ export default class BraftFinderView extends React.Component {
               {this.buildItemList()}
             </div>
           ) : null}
-          {showExternalForm && allowExternal ? (
+          {!showExternalForm && allowExternal ? (
             <div className="bf-add-external">
               <div className="bf-external-form">
                 <div className="bf-external-input">
@@ -241,7 +240,7 @@ export default class BraftFinderView extends React.Component {
                 onClick={this.toggleExternalForm}
                 className="bf-toggle-external-form"
               >
-                {showExternalForm ? (
+                {!showExternalForm ? (
                   <span className="bf-bottom-text">
                     <i className="braft-icon-add" /> {language.addLocalFile}
                   </span>
@@ -546,7 +545,7 @@ export default class BraftFinderView extends React.Component {
       ])
 
       this.setState({
-        showExternalForm: false,
+        showExternalForm: true,
         external: {
           url: '',
           type: 'IMAGE'
