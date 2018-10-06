@@ -80,6 +80,7 @@ export default class BraftFinderView extends React.Component {
               : ''
     }
     console.log(fileAccept)
+    console.log('asdasdadasdadas')
     return {
       fileAccept: fileAccept,
       external: external,
