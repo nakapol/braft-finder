@@ -16,9 +16,10 @@ export default {
   deselect: 'Deselect',
   removeSelected: 'Remove Selected Items',
   externalInputPlaceHolder: 'Source Name|Source URL',
-  externalInputTip: 'Split source name and source URL with "|", confirm by hit Enter.',
-  addLocalFile: 'Add from local',
-  addExternalSource: 'Add from Internet',
+  externalInputTip:
+    'Split source name and source URL with "|", confirm by hit Enter.',
+  addLocalFile: 'Add from computer',
+  addExternalSource: 'Add video or image',
   unnamedItem: 'Unnamed Item',
   confirmInsert: 'Insert selected items'
 }

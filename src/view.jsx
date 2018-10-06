@@ -9,7 +9,6 @@ const defaultAccepts = {
 }
 
 export default class BraftFinderView extends React.Component {
-
   static defaultProps = {
     accepts: {
       image: true,
@@ -25,8 +24,7 @@ export default class BraftFinderView extends React.Component {
     }
   }
 
-  constructor (props) {
-
+  constructor(props) {
     super(props)
 
     this.dragCounter = 0
@@ -42,65 +40,81 @@ export default class BraftFinderView extends React.Component {
         type: 'IMAGE'
       },
       fileAccept: '',
-      showExternalForm: false,
+      showExternalForm: true,
       allowExternal: false,
       items: initialItems
     }
 
     this.changeListenerId = this.controller.onChange(items => {
-      this.setState({ items, confirmable: items.find(({ selected }) => selected) })
+      this.setState({
+        items,
+        confirmable: items.find(({ selected }) => selected)
+      })
       this.props.onChange && this.props.onChange(items)
     })
-
   }
 
-  mapPropsToState (props) {
-
+  mapPropsToState(props) {
     const { accepts, externals } = props
 
-    const fileAccept = !accepts ? [
-      defaultAccepts.image,
-      defaultAccepts.video,
-      defaultAccepts.audio
-    ].join(',') : [
-      accepts.image || defaultAccepts.image,
-      accepts.video || defaultAccepts.video,
-      accepts.audio || defaultAccepts.audio
-    ].join(',')
+    const fileAccept = !accepts
+      ? [defaultAccepts.image, defaultAccepts.video, defaultAccepts.audio].join(
+          ','
+        )
+      : [
+          accepts.image || defaultAccepts.image,
+          accepts.video || defaultAccepts.video,
+          accepts.audio || defaultAccepts.audio
+        ].join(',')
 
     const external = {
       url: '',
-      type: 
-        externals.image ? 'IMAGE' :
-        externals.audio ? 'AUDIO' :
-        externals.video ? 'VIDEO' :
-        externals.embed ? 'EMBED' : ''
+      type: externals.image
+        ? 'IMAGE'
+        : externals.audio
+          ? 'AUDIO'
+          : externals.video
+            ? 'VIDEO'
+            : externals.embed
+              ? 'EMBED'
+              : ''
     }
-console.log(fileAccept)
+    console.log(fileAccept)
     return {
       fileAccept: fileAccept,
       external: external,
-      allowExternal: externals && (externals.image || externals.audio || externals.video || externals.embed)
+      allowExternal:
+        externals &&
+        (externals.image ||
+          externals.audio ||
+          externals.video ||
+          externals.embed)
     }
-
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setState(this.mapPropsToState(this.props))
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     this.setState(this.mapPropsToState(nextProps))
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.controller.offChange(this.changeListenerId)
   }
 
-  render () {
-
+  render() {
     const { language, externals } = this.props
-    const { items, draging, confirmable, fileAccept, external, showExternalForm, allowExternal } = this.state
+    const {
+      items,
+      draging,
+      confirmable,
+      fileAccept,
+      external,
+      showExternalForm,
+      allowExternal
+    } = this.state
 
     return (
       <div className="braft-finder">
@@ -110,18 +124,43 @@ console.log(fileAccept)
           onDrop={this.handleDragDrop}
           className="bf-uploader"
         >
-          <div className={"bf-drag-uploader " + (draging || !items.length ? 'active ' : ' ') + (draging ? 'draging' : '')}>
+          <div
+            className={
+              'bf-drag-uploader ' +
+              (draging || !items.length ? 'active ' : ' ') +
+              (draging ? 'draging' : '')
+            }
+          >
             <span className="bf-drag-tip">
-              <input accept={fileAccept} onChange={this.reslovePickedFiles} multiple type="file"/>
+              <input
+                accept={fileAccept}
+                onChange={this.reslovePickedFiles}
+                multiple
+                type="file"
+              />
               {draging ? language.dropTip : language.dragTip}
             </span>
           </div>
           {items.length ? (
             <div className="bf-list-wrap">
               <div className="bf-list-tools">
-                <span onClick={this.selectAllItems} className="bf-select-all"><i className="braft-icon-done"></i> {language.selectAll}</span>
-                <span onClick={this.deselectAllItems} disabled={!confirmable} className="bf-deselect-all"><i className="braft-icon-close"></i> {language.deselect}</span>
-                <span onClick={this.removeSelectedItems} disabled={!confirmable} className="bf-remove-selected"><i className="braft-icon-bin"></i> {language.removeSelected}</span>
+                <span onClick={this.selectAllItems} className="bf-select-all">
+                  <i className="braft-icon-done" /> {language.selectAll}
+                </span>
+                <span
+                  onClick={this.deselectAllItems}
+                  disabled={!confirmable}
+                  className="bf-deselect-all"
+                >
+                  <i className="braft-icon-close" /> {language.deselect}
+                </span>
+                <span
+                  onClick={this.removeSelectedItems}
+                  disabled={!confirmable}
+                  className="bf-remove-selected"
+                >
+                  <i className="braft-icon-bin" /> {language.removeSelected}
+                </span>
               </div>
               {this.buildItemList()}
             </div>
@@ -131,17 +170,65 @@ console.log(fileAccept)
               <div className="bf-external-form">
                 <div className="bf-external-input">
                   <div>
-                    <input onKeyDown={this.confirmAddExternal} value={external.url} onChange={this.inputExternal} placeholder={language.externalInputPlaceHolder}/>
+                    <input
+                      onKeyDown={this.confirmAddExternal}
+                      value={external.url}
+                      onChange={this.inputExternal}
+                      placeholder={language.externalInputPlaceHolder}
+                    />
                   </div>
-                  <button type="button" onClick={this.confirmAddExternal} disabled={!external.url.trim().length}>{language.confirm}</button>
+                  <button
+                    type="button"
+                    onClick={this.confirmAddExternal}
+                    disabled={!external.url.trim().length}
+                  >
+                    {language.confirm}
+                  </button>
                 </div>
-                <div data-type={external.type} className="bf-switch-external-type">
-                  {externals.image ? <button type="button" onClick={this.switchExternalType} data-type="IMAGE">{language.image}</button> : null}
-                  {externals.audio ? <button type="button" onClick={this.switchExternalType} data-type="AUDIO">{language.audio}</button> : null}
-                  {externals.video ? <button type="button" onClick={this.switchExternalType} data-type="VIDEO">{language.video}</button> : null}
-                  {externals.embed ? <button type="button" onClick={this.switchExternalType} data-type="EMBED">{language.embed}</button> : null}
+                <div
+                  data-type={external.type}
+                  className="bf-switch-external-type"
+                >
+                  {externals.image ? (
+                    <button
+                      type="button"
+                      onClick={this.switchExternalType}
+                      data-type="IMAGE"
+                    >
+                      {language.image}
+                    </button>
+                  ) : null}
+                  {externals.audio ? (
+                    <button
+                      type="button"
+                      onClick={this.switchExternalType}
+                      data-type="AUDIO"
+                    >
+                      {language.audio}
+                    </button>
+                  ) : null}
+                  {externals.video ? (
+                    <button
+                      type="button"
+                      onClick={this.switchExternalType}
+                      data-type="VIDEO"
+                    >
+                      {language.video}
+                    </button>
+                  ) : null}
+                  {externals.embed ? (
+                    <button
+                      type="button"
+                      onClick={this.switchExternalType}
+                      data-type="EMBED"
+                    >
+                      {language.embed}
+                    </button>
+                  ) : null}
                 </div>
-                <span className="bf-external-tip">{language.externalInputTip}</span>
+                <span className="bf-external-tip">
+                  {language.externalInputTip}
+                </span>
               </div>
             </div>
           ) : null}
@@ -149,90 +236,114 @@ console.log(fileAccept)
         <footer className="bf-manager-footer">
           <div className="pull-left">
             {allowExternal ? (
-              <span 
+              <span
                 onClick={this.toggleExternalForm}
                 className="bf-toggle-external-form"
               >
                 {showExternalForm ? (
-                  <span className="bf-bottom-text"><i className="braft-icon-add"></i> {language.addLocalFile}</span>
+                  <span className="bf-bottom-text">
+                    <i className="braft-icon-add" /> {language.addLocalFile}
+                  </span>
                 ) : (
-                  <span className="bf-bottom-text"><i className="braft-icon-add"></i> {language.addExternalSource}</span>
+                  <span className="bf-bottom-text">
+                    <i className="braft-icon-add" />{' '}
+                    {language.addExternalSource}
+                  </span>
                 )}
               </span>
             ) : null}
           </div>
           <div className="pull-right">
-            <button onClick={this.confirmInsert} className="button button-insert" disabled={!confirmable}>{language.insert}</button>
-            <button onClick={this.cancelInsert} className="button button-cancel">{language.cancel}</button>
+            <button
+              onClick={this.confirmInsert}
+              className="button button-insert"
+              disabled={!confirmable}
+            >
+              {language.insert}
+            </button>
+            <button
+              onClick={this.cancelInsert}
+              className="button button-cancel"
+            >
+              {language.cancel}
+            </button>
           </div>
         </footer>
       </div>
     )
-
   }
 
-  buildItemList () {
-
+  buildItemList() {
     return (
       <ul className="bf-list">
         <li className="bf-add-item">
-          <i className="braft-icon-add"></i>
-          <input accept={this.state.fileAccept} onChange={this.reslovePickedFiles} multiple type="file"/>
+          <i className="braft-icon-add" />
+          <input
+            accept={this.state.fileAccept}
+            onChange={this.reslovePickedFiles}
+            multiple
+            type="file"
+          />
         </li>
         {this.state.items.map((item, index) => {
-
           let previewerComponents = null
-          let progressMarker = item.uploading && !this.props.hideProgress ? (
-            <div className="bf-item-uploading">
-              <div className="bf-item-uploading-bar" style={{width: item.uploadProgress / 1 + '%'}}></div>
-            </div>
-          ) : ''
+          let progressMarker =
+            item.uploading && !this.props.hideProgress ? (
+              <div className="bf-item-uploading">
+                <div
+                  className="bf-item-uploading-bar"
+                  style={{ width: item.uploadProgress / 1 + '%' }}
+                />
+              </div>
+            ) : (
+              ''
+            )
 
           switch (item.type) {
-            case 'IMAGE': 
+            case 'IMAGE':
               previewerComponents = (
                 <div className="bf-image">
                   {progressMarker}
                   <img src={item.thumbnail || item.url} />
                 </div>
               )
-            break
+              break
             case 'VIDEO':
               previewerComponents = (
                 <div className="bf-icon bf-video" title={item.url}>
                   {progressMarker}
-                  <i className="braft-icon-film"></i>
+                  <i className="braft-icon-film" />
                   <span>{item.name || item.url}</span>
                 </div>
               )
-            break
+              break
             case 'AUDIO':
               previewerComponents = (
                 <div className="bf-icon bf-audio" title={item.url}>
                   {progressMarker}
-                  <i className="braft-icon-music"></i>
+                  <i className="braft-icon-music" />
                   <span>{item.name || item.url}</span>
                 </div>
               )
-            break
+              break
             case 'EMBED':
               previewerComponents = (
                 <div className="bf-icon bf-embed" title={item.url}>
                   {progressMarker}
-                  <i className="braft-icon-code"></i>
+                  <i className="braft-icon-code" />
                   <span>{item.name || this.props.language.embed}</span>
                 </div>
               )
-            break
+              break
             default:
               previewerComponents = (
                 <a className="bf-icon bf-file" title={item.url} href={item.url}>
                   {progressMarker}
-                  <i className="braft-icon-file-text"></i>
+                  <i className="braft-icon-file-text" />
                   <span>{item.name || item.url}</span>
                 </a>
               )
-            break 
+              break
           }
 
           let className = ['bf-item']
@@ -249,19 +360,20 @@ console.log(fileAccept)
               onClick={this.toggleSelectItem}
             >
               {previewerComponents}
-              <span data-id={item.id} onClick={this.removeItem} className="bf-item-remove braft-icon-close"></span>
+              <span
+                data-id={item.id}
+                onClick={this.removeItem}
+                className="bf-item-remove braft-icon-close"
+              />
               <span className="bf-item-title">{item.name}</span>
             </li>
           )
-
         })}
       </ul>
     )
-
   }
 
-  toggleSelectItem = (event) => {
-
+  toggleSelectItem = event => {
     const itemId = event.currentTarget.dataset.id
     const item = this.controller.getMediaItem(itemId)
 
@@ -270,25 +382,28 @@ console.log(fileAccept)
     }
 
     if (item.selected) {
-
-      if (!this.props.onBeforeDeselect || this.props.onBeforeDeselect([item], this.controller.getItems()) !== false) {
+      if (
+        !this.props.onBeforeDeselect ||
+        this.props.onBeforeDeselect([item], this.controller.getItems()) !==
+          false
+      ) {
         this.controller.deselectMediaItem(itemId)
-        this.props.onDeselect && this.props.onDeselect([item], this.controller.getItems())
+        this.props.onDeselect &&
+          this.props.onDeselect([item], this.controller.getItems())
       }
-
     } else {
-
-      if (!this.props.onBeforeSelect || this.props.onBeforeSelect([item], this.controller.getItems()) !== false) {
+      if (
+        !this.props.onBeforeSelect ||
+        this.props.onBeforeSelect([item], this.controller.getItems()) !== false
+      ) {
         this.controller.selectMediaItem(itemId)
-        this.props.onSelect && this.props.onSelect([item], this.controller.getItems())
+        this.props.onSelect &&
+          this.props.onSelect([item], this.controller.getItems())
       }
-
     }
-
   }
 
-  removeItem = (event) => {
-
+  removeItem = event => {
     const itemId = event.currentTarget.dataset.id
     const item = this.controller.getMediaItem(itemId)
 
@@ -296,53 +411,62 @@ console.log(fileAccept)
       return false
     }
 
-    if (!this.props.onBeforeRemove || this.props.onBeforeRemove([item], this.controller.getItems()) !== false) {
+    if (
+      !this.props.onBeforeRemove ||
+      this.props.onBeforeRemove([item], this.controller.getItems()) !== false
+    ) {
       this.controller.removeMediaItem(itemId)
-      this.props.onRemove && this.props.onRemove([item], this.controller.getItems())
+      this.props.onRemove &&
+        this.props.onRemove([item], this.controller.getItems())
     }
 
     event.stopPropagation()
-
   }
 
   selectAllItems = () => {
-
     const allItems = this.controller.getItems()
 
-    if (!this.props.onBeforeSelect || this.props.onBeforeSelect(allItems, allItems) !== false) {
+    if (
+      !this.props.onBeforeSelect ||
+      this.props.onBeforeSelect(allItems, allItems) !== false
+    ) {
       this.controller.selectAllItems()
       this.props.onSelect && this.props.onSelect(allItems, allItems)
     }
-
   }
 
   deselectAllItems = () => {
-
     const allItems = this.controller.getItems()
 
-    if (!this.props.onBeforeDeselect || this.props.onBeforeDeselect(allItems, allItems) !== false) {
+    if (
+      !this.props.onBeforeDeselect ||
+      this.props.onBeforeDeselect(allItems, allItems) !== false
+    ) {
       this.controller.deselectAllItems()
       this.props.onDeselect && this.props.onDeselect(allItems, allItems)
     }
-
   }
 
   removeSelectedItems = () => {
-
     const selectedItems = this.controller.getSelectedItems()
 
-    if (!this.props.onBeforeRemove || this.props.onBeforeRemove(selectedItems, this.controller.getItems()) !== false) {
+    if (
+      !this.props.onBeforeRemove ||
+      this.props.onBeforeRemove(selectedItems, this.controller.getItems()) !==
+        false
+    ) {
       this.controller.removeSelectedItems()
-      this.props.onRemove && this.props.onRemove(selectedItems, this.controller.getItems())
+      this.props.onRemove &&
+        this.props.onRemove(selectedItems, this.controller.getItems())
     }
-
   }
 
   handleDragLeave = () => {
-    this.dragCounter --
-    this.dragCounter === 0 && this.setState({
-      draging: false
-    })
+    this.dragCounter--
+    this.dragCounter === 0 &&
+      this.setState({
+        draging: false
+      })
   }
 
   handleDragDrop = () => {
@@ -350,14 +474,13 @@ console.log(fileAccept)
     this.setState({ draging: false })
   }
 
-  handleDragEnter = (event) => {
+  handleDragEnter = event => {
     event.preventDefault()
-    this.dragCounter ++
+    this.dragCounter++
     this.setState({ draging: true })
   }
 
-  reslovePickedFiles = (event) => {
-
+  reslovePickedFiles = event => {
     event.persist()
 
     let files = event.target.files
@@ -371,15 +494,18 @@ console.log(fileAccept)
       }
     }
 
-    this.controller.resolveFiles({
-      files: files,
-      onItemReady: ({ id }) => this.controller.selectMediaItem(id),
-      onAllReady: () => event.target.value = null
-    }, 0, this.props.accepts)
-
+    this.controller.resolveFiles(
+      {
+        files: files,
+        onItemReady: ({ id }) => this.controller.selectMediaItem(id),
+        onAllReady: () => (event.target.value = null)
+      },
+      0,
+      this.props.accepts
+    )
   }
 
-  inputExternal = (event) => {
+  inputExternal = event => {
     this.setState({
       external: {
         ...this.state.external,
@@ -388,29 +514,35 @@ console.log(fileAccept)
     })
   }
 
-  switchExternalType = (event) => {
+  switchExternalType = event => {
     this.setState({
       external: { ...this.state.external, type: event.target.dataset.type }
     })
   }
 
-  confirmAddExternal = (event) => {
-
-    if (event.target.nodeName.toLowerCase() === 'button' || event.keyCode === 13) {
-
+  confirmAddExternal = event => {
+    if (
+      event.target.nodeName.toLowerCase() === 'button' ||
+      event.keyCode === 13
+    ) {
       let { url, type } = this.state.external
       url = url.split('|')
       let name = url.length > 1 ? url[0] : this.props.language.unnamedItem
       url = url.length > 1 ? url[1] : url[0]
       let thumbnail = type === 'IMAGE' ? url : null
 
-      this.controller.addItems([{
-        thumbnail, url, name, type,
-        id: new Date().getTime() + '_' + UniqueIndex(),
-        uploading: false,
-        uploadProgress: 1,
-        selected: true
-      }])
+      this.controller.addItems([
+        {
+          thumbnail,
+          url,
+          name,
+          type,
+          id: new Date().getTime() + '_' + UniqueIndex(),
+          uploading: false,
+          uploadProgress: 1,
+          selected: true
+        }
+      ])
 
       this.setState({
         showExternalForm: false,
@@ -419,14 +551,12 @@ console.log(fileAccept)
           type: 'IMAGE'
         }
       })
-
     }
-
   }
 
   toggleExternalForm = () => {
     this.setState({
-      showExternalForm: !this.state.showExternalForm,
+      showExternalForm: !this.state.showExternalForm
     })
   }
 
@@ -435,26 +565,21 @@ console.log(fileAccept)
   }
 
   confirmInsert = () => {
-
     const selectedItems = this.controller.getSelectedItems()
 
     if (this.props.onBeforeInsert) {
-
       const filteredItems = this.props.onBeforeInsert(selectedItems)
 
-      if (filteredItems && (filteredItems instanceof Array)) {
+      if (filteredItems && filteredItems instanceof Array) {
         this.controller.deselectAllItems()
         this.props.onInsert && this.props.onInsert(filteredItems)
       } else if (filteredItems !== false) {
         this.controller.deselectAllItems()
         this.props.onInsert && this.props.onInsert(selectedItems)
       }
-
     } else {
       this.controller.deselectAllItems()
       this.props.onInsert && this.props.onInsert(selectedItems)
     }
-
   }
-
 }
