@@ -3,9 +3,9 @@ import React from 'react'
 import { UniqueIndex } from 'utils/base'
 
 const defaultAccepts = {
-  image: 'image/png,image/jpeg,image/gif,image/webp,image/apng,image/svg',
-  video: 'video/mp4',
-  audio: 'audio/mp3'
+  image: 'image/png,image/jpeg,image/gif,image/webp,image/apng,image/svg'
+  // video: 'video/mp4',
+  // audio: 'audio/mp3'
 }
 
 export default class BraftFinderView extends React.Component {
