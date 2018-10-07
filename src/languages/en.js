@@ -17,9 +17,9 @@ export default {
   removeSelected: 'Remove Selected Items',
   externalInputPlaceHolder: 'Source Name|Source URL',
   externalInputTip:
-    'Split source name and source URL with "|", confirm by hit Enter.',
-  addLocalFile: 'Add from computer',
-  addExternalSource: 'Add video or image',
+    'Split source name and source URL with "|", THIS IS VIDEO | Example: <iframe width="560" height="315" src="https://www.youtube.com/embed/0suSWZMBBwg" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>',
+  addLocalFile: 'Add an images.',
+  addExternalSource: 'Add an embed video.',
   unnamedItem: 'Unnamed Item',
   confirmInsert: 'Insert selected items'
 }
